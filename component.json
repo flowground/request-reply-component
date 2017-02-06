@@ -1,11 +1,11 @@
 {
   "title": "HTTP Reply",
-  "service": "request-reply",
   "description": "Used to reply to HTTP webhooks",
   "actions": {
     "reply": {
       "title": "Reply",
       "main": "./reply.js",
+      "service": "request-reply",
       "fields": {
         "customHeaders": {
           "label": "Custom HTTP Headers",
