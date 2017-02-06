@@ -1,22 +1,20 @@
 "use strict";
-let Q = require("q");
-let debug = require('debug')('request-reply');
-let messages = require('elasticio-node').messages;
+const Q = require("q");
+const debug = require('debug')('request-reply');
 
 const HEADER_CONTENT_TYPE = 'Content-Type';
-const HEADER_ROUTING_KEY = 'X-EIO-Routing-Key';
 const DEFAULT_CONTENT_TYPE = 'application/json';
 
 exports.process = function (msg) {
-    let replyTo = msg.headers.reply_to;
+    const replyTo = msg.headers.reply_to;
 
     console.log(`Received new message, replyTo=${replyTo}`);
     debug('Received new message:%j', msg);
 
-    var contentType;
-    var responseBody;
+    let contentType;
+    let responseBody;
 
-    var self = this;
+    const self = this;
 
 
     Q()
@@ -39,9 +37,13 @@ exports.process = function (msg) {
         console.log(`Replying to ${replyTo}`);
         console.log(`Response content type is ${contentType}`);
 
-        var reply = messages.newMessageWithBody(responseBody);
-        reply.headers[HEADER_ROUTING_KEY] = replyTo;
-        reply.headers[HEADER_CONTENT_TYPE] = contentType;
+        const reply = {
+            statusCode: 200,
+            headers: {
+                [HEADER_CONTENT_TYPE]: contentType
+            },
+            body: responseBody
+        };
 
         if (msg.body.customHeaders) {
             console.log('Applying custom headers: %j', msg.body.customHeaders);
@@ -49,11 +51,11 @@ exports.process = function (msg) {
         }
 
         debug('Replying with %j', reply);
-        self.emit('data', reply);
+        self.emit('httpReply', reply);
     }
 
     function getContentType() {
-        var contentType = msg.body.contentType;
+        const contentType = msg.body.contentType;
 
         if (contentType) {
             if (/^application|text\//.test(contentType)) {

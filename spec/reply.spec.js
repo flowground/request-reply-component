@@ -44,14 +44,13 @@ describe('Reply', () => {
 
             spy.callCount.should.be.equal(3);
 
-            spy.getCall(0).args[0].should.be.equal('data');
+            spy.getCall(0).args[0].should.be.equal('httpReply');
             spy.getCall(1).args[0].should.be.equal('data');
             spy.getCall(2).args[0].should.be.equal('end');
 
             // reply message
             spy.getCall(0).args[1].headers.should.be.deep.equal({
                 'Content-Type': 'application/json',
-                'X-EIO-Routing-Key': 'my_routing_key_123',
                 'X-Test-Header1': 'test1',
                 'X-Test-Header2': 'test2'
             });
@@ -128,7 +127,7 @@ describe('Reply', () => {
         it('should have send two data and one end', () => {
             const spy = self.emit;
             spy.callCount.should.be.equal(3);
-            spy.getCall(0).args[0].should.be.equal('data');
+            spy.getCall(0).args[0].should.be.equal('httpReply');
             spy.getCall(1).args[0].should.be.equal('data');
             spy.getCall(2).args[0].should.be.equal('end');
         });
@@ -137,8 +136,7 @@ describe('Reply', () => {
             const spy = self.emit;
             // reply message
             spy.getCall(0).args[1].headers.should.be.deep.equal({
-                'Content-Type': 'application/json',
-                'X-EIO-Routing-Key': 'my_routing_key_123'
+                'Content-Type': 'application/json'
             });
             spy.getCall(0).args[1].body.should.be.deep.equal({
                 foo: 'bar'
